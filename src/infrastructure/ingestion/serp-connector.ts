@@ -27,7 +27,7 @@ export class SERPConnector {
       return this.parseSERPResults(results);
     } catch (error) {
       console.error(`❌ SERP search failed for keywords:`, config.keywords, error);
-      throw error;
+      return [];
     }
   }
 
@@ -106,9 +106,9 @@ export class SERPConnector {
   private extractCompany(snippet: string): string {
     // Simple extraction from snippet - in production would use NLP
     const companyPatterns = [
-      /at\s+([A-Z][a-zA-Z\s]+)/i,
-      /@([A-Z][a-zA-Z]+)/i,
-      /([A-Z][a-zA-Z]+)\s+is hiring/i
+      /\bat\s+([A-Z][A-Za-z0-9&.]+(?:\s+[A-Z][A-Za-z0-9&.]+)*)/,
+      /@([A-Z][A-Za-z0-9]+)/,
+      /([A-Z][A-Za-z0-9&.]+)\s+is hiring/i,
     ];
 
     for (const pattern of companyPatterns) {
