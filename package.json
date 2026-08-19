@@ -15,9 +15,9 @@
     "test:watch": "vitest --watch",
     "test:cov": "vitest run --coverage",
     "test:e2e": "vitest run test/e2e/**/*.spec.ts",
-    "check:dotfiles": "node scripts/check-dotfiles.js"
+    "check:dotfiles": "node scripts/check-dotfiles.js",
+    "prepare": "node -e \"if (!process.env.CI) require('child_process').execSync('husky install', {stdio:'inherit'})\""
   },
-  "prepare": "husky install",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "bullmq": "^5.0.0",
