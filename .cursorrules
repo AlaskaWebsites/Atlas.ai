@@ -1,0 +1,50 @@
+# .cursorrules - Regras Mestre do Projeto Atlas.ai
+# Objetivo: Garantir que agentes e assistentes de código sigam rigorosamente
+# as diretrizes arquiteturais, contratos de tipagem e padrões de qualidade.
+
+# 1) Contexto Obrigatório
+# Sempre consulte: /docs/adrs/* e /docs/roadmap.md antes de sugerir ou implementar alterações.
+# Se existir um ADR para o domínio afetado, aplique-o ESTRITAMENTE.
+
+# 2) Arquitetura de Software (Clean Architecture Estrita)
+# - PUREZA DO DOMÍNIO: Camadas de negócio (src/core/domain, src/core/use-cases) NÃO dependem de frameworks ou bibliotecas externas de rede/banco.
+# - ISOLAMENTO DE INFRAESTRUTURA:
+#   * Ingestão HTTP/RSS, APIs ATS (Greenhouse, Lever, Ashby, Workable) e SERP/Dorking em `src/infrastructure/ingestion/`
+#   * Filas assíncronas e Workers (BullMQ/Redis) em `src/infrastructure/queues/`
+#   * Provedores de IA (LLM / Embeddings) em `src/infrastructure/ai/`
+#   * Servidor MCP em `src/infrastructure/mcp/`
+# - VALIDAÇÃO E FAIL-FAST: Validação estrita e higienização de dados de entrada/ambiente EXCLUSIVAMENTE via Zod.
+
+# 3) Resiliência e Filas (BullMQ + Redis)
+# - Toda análise pesada e comunicação com LLMs deve ser desacoplada via BullMQ.
+# - RATE LIMITING & CONCURRENCY: Respeitar limites de chamadas de LLM através de `limiter` e concorrência controlada.
+# - GESTÃO DE ERRO 429: Configurar retentativas com recuo exponencial (`backoff: { type: 'exponential' }`).
+# - IDEMPOTÊNCIA: Deduplicação de vagas utilizando hash criptográfico no `jobId`.
+
+# 4) Processamento Cognitivo (Padrão MapReduce)
+# - Para mitigar o Context Rot, fracionar lotes de vagas em micro-blocos (ex: 5 vagas) no Map Stage.
+# - Atuar estritamente como "Avaliador de Currículo", calculando fit score (0 a 100) contra a stack técnica (Node.js, React, Vue, TS).
+# - O Reduce Stage deve agregar os relatórios de forma determinística.
+
+# 5) Exposição via Model Context Protocol (MCP)
+# - Utilizar a SDK oficial `@modelcontextprotocol/sdk`.
+# - Expor ferramentas autônomas (ex: `search_ats_dorks`, `enqueue_job_batch`, `get_top_matches`) via `registerTool` com validação de schemas Zod.
+
+# 6) Testes e Qualidade (VITEST OBRIGATÓRIO)
+# - É EXPRESSAMENTE PROIBIDO O USO DE JEST. Todo o ecossistema utiliza Vitest.
+# - Criar testes unitários para casos de uso e testes de integração com mocks para adaptadores de infraestrutura.
+
+# 7) Fluxo de Versionamento (GitFlow Simplificado)
+# - Branches padrão: `main` (Produção/Estável) e `develop` (Desenvolvimento contínuo).
+# - Novos desenvolvimentos devem partir sempre de `develop`. A branch `main` só recebe código via Pull Request vindo de `develop`.
+
+# 8) Nomeação e localização de artefatos
+# - Coloque ADRs em /docs/adrs (numerados: 001-*.md, 002-*.md)
+# - Roadmap principal em /docs/roadmap.md
+# - Documentação de infraestrutura em /docs/infrastructure.md
+
+# 9) Segurança e dados sensíveis
+# - Nunca incluir chaves, segredos ou dados sensíveis nos commits ou prompts; devolver erro ao detectar esses padrões.
+
+# 10) Observabilidade de mudanças
+# - Se IA alterar arquitetura (mover, renomear arquivos críticos), gerar um resumo e abrir PR com descrição clara e link para ADRs usados.
