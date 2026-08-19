@@ -20,10 +20,17 @@ build/
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
+.vsc
+.cursor/
+.devin/
+.windsurf/
+.cline/
+node_modules
+dist
+*.log
+.env
 .DS_Store
+test-results.txt
 
 # Testing
 coverage/
@@ -35,3 +42,7 @@ logs/
 
 # Redis
 dump.rdb
+
+# Scripts (allow check-dotfiles.js)
+!scripts/
+!scripts/check-dotfiles.js

@@ -22,28 +22,28 @@ Este roadmap detalha as **5 fases principais** de desenvolvimento, estruturadas 
 
 ### Tarefas
 
-- [ ] **RSS/Atom Feeds**
-  - [ ] We Work Remotely (Fullstack + Programming)
-  - [ ] GitHub Backend-BR Issues (`backend-br/vagas`)
-  - [ ] StackOverflow Jobs Feed
-  - [ ] Trampos.co RSS Feed
-  - Implementar: `src/infrastructure/ingestion/rss-client.ts`
-  - Testes: `src/infrastructure/ingestion/rss-client.spec.ts`
+- [x] **RSS/Atom Feeds**
+  - [x] We Work Remotely (Fullstack + Programming)
+  - [x] GitHub Backend-BR Issues (`backend-br/vagas`)
+  - [x] StackOverflow Jobs Feed
+  - [x] Trampos.co RSS Feed
+  - [x] Implementar: `src/infrastructure/ingestion/rss-client.ts`
+  - [x] Testes: `test/unit/ingestion/rss-client.spec.ts`
 
-- [ ] **APIs de ATS Públicas**
-  - [ ] Greenhouse: `boards-api.greenhouse.io/v1/boards/{token}/jobs?content=true`
-  - [ ] Lever: `api.lever.co/v0/postings/{clientname}?mode=json`
-  - [ ] Ashby: `api.ashbyhq.com/posting-api/job-board/{clientname}`
-  - [ ] Workable: `apply.workable.com/api/v3/accounts/{slug}/jobs`
-  - Implementar: `src/infrastructure/ingestion/ats-adapters/`
-  - Testes: Mocks das respostas JSON
+- [x] **APIs de ATS Públicas**
+  - [x] Greenhouse: `boards-api.greenhouse.io/v1/boards/{token}/jobs?content=true`
+  - [x] Lever: `api.lever.co/v0/postings/{clientname}?mode=json`
+  - [x] Ashby: `api.ashbyhq.com/posting-api/job-board/{clientname}`
+  - [x] Workable: `apply.workable.com/api/v3/accounts/{slug}/jobs`
+  - [x] Implementar: `src/infrastructure/ingestion/ats-adapters/`
+  - [x] Testes: `test/unit/ingestion/ats-adapters.spec.ts`
 
-- [ ] **Conector SERP & Google Dorks**
-  - [ ] Integração com SerpApi ou alternativa
-  - [ ] Operadores: `site:`, `inurl:`, `tbs=qdr:w` (última semana)
-  - [ ] Padrões para Gupy, Greenhouse, Lever, Workable
-  - Implementar: `src/infrastructure/ingestion/serp-connector.ts`
-  - Testes: Mocks de respostas SERP
+- [x] **Conector SERP & Google Dorks**
+  - [x] Integração com SerpApi (implementado com API key)
+  - [x] Operadores: `site:`, `inurl:`, `tbs=qdr:w` (última semana)
+  - [x] Padrões para Gupy, Greenhouse, Lever, Workable
+  - [x] Implementar: `src/infrastructure/ingestion/serp-connector.ts`
+  - [x] Testes: `test/unit/ingestion/serp-connector.spec.ts`
 
 ### Artefatos de Saída
 
@@ -283,7 +283,7 @@ interface MCPTool {
 
 | Fase | Título | Status | ETA |
 |------|--------|--------|-----|
-| 1 | Ingestão Passiva | ⬜ TODO | T+2w |
+| 1 | Ingestão Passiva | ✅ COMPLETA | T+2w |
 | 2 | Normalização & Zod | ⬜ TODO | T+1w |
 | 3 | Redis & BullMQ | ⬜ TODO | T+2w |
 | 4 | MapReduce & LLM | ⬜ TODO | T+3w |

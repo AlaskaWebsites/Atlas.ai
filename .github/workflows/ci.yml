@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check forbidden tool dotfiles
+        run: |
+          echo "Checking for forbidden tool dotfiles in the change set..."
+          git fetch origin develop --depth=1 || true
+          CHANGED=$(git diff --name-only origin/develop...HEAD || git diff --name-only HEAD^..HEAD || true)
+          if [ -z "$CHANGED" ]; then
+            echo "No changed files detected."
+            exit 0
+          fi
+          echo "$CHANGED" | grep -E '(^|/)\.(cursor|devin|windsurf|cline)(/|$)' && {
+            echo "\nERROR: Forbidden tool-specific dotfiles detected in this change set:"
+            echo "$CHANGED" | grep -E '(^|/)\.(cursor|devin|windsurf|cline)(/|$)';
+            echo "These files are machine-local tool configs and must not be committed. Remove them from the commit or add them to .gitignore.";
+            exit 1
+          } || echo "No forbidden dotfiles found."
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test -- --coverage
+        env:
+          CI: true
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ./coverage
